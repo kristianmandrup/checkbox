@@ -1,0 +1,44 @@
+<App>
+    <JavaScript>
+        var Observable = require('FuseJS/Observable');
+        var list = Observable();
+        list.add({'id':list.length,'title':'checkbox one','checked':Observable(false)});
+        list.add({'id':list.length,'title':'checkbox two','checked':Observable(false)});
+        list.add({'id':list.length,'title':'checkbox three','checked':Observable(false)});
+        function handleCheckboxHit(args) {
+            //console.log('got hit on checkbox: ' + JSON.stringify(args));
+            var checkbox = list.getAt(args.data.id);
+            checkbox.checked.value = ! checkbox.checked.value;
+        };
+        module.exports = {
+            'list': list,
+            'handleCheckboxHit': handleCheckboxHit
+        };
+    </JavaScript>
+    <Panel ux:Class="Checkbox" Width="50" HitTestMode="LocalBoundsAndChildren">
+        <bool ux:Property="Checked" />
+        <WhileTrue Value="{Property this.Checked}">
+            <Rectangle Width="50%" Height="50%" Fill="#aaa" />
+        </WhileTrue>
+        <WhileFalse Value="{Property this.Checked}">
+            <Rectangle Width="50%" Height="50%">
+                <Stroke Width="2" Color="#aaa" />
+            </Rectangle>
+        </WhileFalse>
+        <Clicked>
+            <Callback Handler="{handleCheckboxHit}" />
+        </Clicked>
+    </Panel>
+    <Panel ux:Class="ListItem" Height="50" Background="#fff">
+        <Grid Columns="1*,auto">
+            <Text Value="{title}" Width="100" Alignment="CenterLeft" Color="#000" Padding="10,0,0,0" />
+            <Checkbox Checked="{checked}" />
+        </Grid>
+    </Panel>
+    <StackPanel Background="#ddd">
+        <Each Items="{list}">
+            <ListItem />
+        </Each>
+    </StackPanel>
+
+</App>
